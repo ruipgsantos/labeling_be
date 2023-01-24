@@ -4,7 +4,9 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import { NextFunction } from "connect";
 import "express-async-errors";
-import { AuthRouter, CaseRouter } from "./routes";
+import { AuthRouter, CaseRouter } from "./controllers";
+
+import { MongoClient } from "mongodb";
 
 require("dotenv").config();
 
@@ -27,5 +29,19 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   }
   next();
 });
+
+const client = new MongoClient(process.env.DATABASE_URL);
+
+const insertMockUser = async () => {
+  try {
+    await client.connect();
+    const doc = await client.db("cases").command({ ping: 1 });
+    console.log(doc);
+  } finally {
+    await client.close();
+  }
+};
+
+insertMockUser();
 
 export default app;
