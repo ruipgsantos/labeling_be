@@ -1,4 +1,4 @@
-import AuthRouter from "./auth";
-import CaseRouter from "./case";
+import AuthRouter from "./AuthController";
+import CaseRouter from "./CaseController";
 
 export { AuthRouter, CaseRouter };
