@@ -60,12 +60,6 @@ export default class CaseRepository extends Repository {
       labelId
     );
 
-    console.log(`condition`);
-    console.log(condition);
-
-    console.log("args");
-    console.log({ caseId, labelId, doctorId });
-
     return await this.execute(async () => {
       return await this.queryCollection().updateOne(
         { _id: new ObjectId(caseId) },

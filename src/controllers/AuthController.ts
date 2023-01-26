@@ -11,7 +11,6 @@ router.post(
     req: Request<{}, {}, { username: string; password: string }>,
     res: Response<User>
   ) => {
-    console.log(req.session);
     const fetchedUser = await userRepo.getUser({ username: req.body.username });
 
     if (fetchedUser.password === req.body.password) {
