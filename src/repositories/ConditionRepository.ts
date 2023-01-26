@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Condition } from "../models";
 import Repository from "./Repository";
 
@@ -26,6 +27,12 @@ export default class ConditionRepository extends Repository {
   public async getAllConditions(): Promise<Condition[]> {
     return await this.execute(async () => {
       return await this.queryCollection().find({}).toArray();
+    });
+  }
+
+  public async getCondition(_id: string): Promise<Condition[]> {
+    return await this.execute(async () => {
+      return await this.queryCollection().findOne({ _id: new ObjectId(_id) });
     });
   }
 }

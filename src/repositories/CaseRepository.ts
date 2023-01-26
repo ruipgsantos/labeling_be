@@ -1,6 +1,7 @@
 import { Case } from "../models";
 import Repository from "./Repository";
 import { ObjectId, InsertOneResult, InsertManyResult } from "mongodb";
+import ConditionRepository from "./ConditionRepository";
 
 export default class CaseRepository extends Repository {
   protected static readonly CASE_COLLECTION = "case";
@@ -47,23 +48,36 @@ export default class CaseRepository extends Repository {
   }
 
   public async setCaseLabelled({
-    _id,
-    label,
+    caseId,
+    labelId,
+    doctorId,
   }: {
-    _id: string;
-    label: string;
+    caseId: string;
+    labelId: string;
+    doctorId: string;
   }): Promise<Case> {
+    const condition = await ConditionRepository.getInstance().getCondition(
+      labelId
+    );
+
+    console.log(`condition`);
+    console.log(condition);
+
+    console.log("args");
+    console.log({ caseId, labelId, doctorId });
+
     return await this.execute(async () => {
-      const res = await this.queryCollection().findOneAndUpdate(
-        { _id: new ObjectId(_id) },
-        { $set: { labelled: true, label } }
+      return await this.queryCollection().updateOne(
+        { _id: new ObjectId(caseId) },
+        {
+          $set: {
+            labelled: true,
+            label: condition,
+            doctorId,
+            time: Date.now(),
+          },
+        }
       );
-
-      if (!res.ok) {
-        throw Error();
-      }
-
-      return res.value;
     });
   }
 }

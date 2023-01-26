@@ -7,7 +7,6 @@ import "express-async-errors";
 import { AuthRouter, CaseRouter, ConditionRouter } from "./controllers";
 import { loadCases, loadConditions } from "./utils";
 import session from "express-session";
-import { v4 as uuidv4 } from "uuid";
 import cookieParser from "cookie-parser";
 import Repository from "./repositories/Repository";
 
@@ -15,10 +14,9 @@ require("dotenv").config();
 
 const app = express();
 
-//TODO: cors options
 app.use(
   cors({
-    origin: /^(http|https):\/\/localhost:\d{4}/,
+    origin: process.env.CLIENT_URL,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
     credentials: true,
   })
@@ -27,18 +25,22 @@ app.use(
 app.use(cookieParser());
 app.use(
   session({
-    genid: function () {
-      return uuidv4();
-    },
     secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
+      httpOnly: false,
       secure: false,
-      maxAge: 1,
+      maxAge: 1000 * 60 * 60,
     },
   })
 );
+
+declare module "express-session" {
+  export interface SessionData {
+    userId: string;
+  }
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -62,7 +64,6 @@ loadCases();
 
 process.on("SIGINT", async () => {
   await Repository.closeConnections();
-  console.log("Mongoose disconnected on app termination");
   process.exit(0);
 });
 

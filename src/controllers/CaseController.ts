@@ -12,10 +12,15 @@ router.get("/", async (req: Request, res: Response<Case[]>) => {
 router.put(
   "/",
   async (
-    req: Request<{}, {}, { _id: string; label: string }>,
+    req: Request<{}, {}, { caseId: string; labelId: string }>,
     res: Response<Case>
   ) => {
-    res.json(await caseRepo.setCaseLabelled(req.body));
+    res.json(
+      await caseRepo.setCaseLabelled({
+        ...req.body,
+        doctorId: req.session.userId,
+      })
+    );
   }
 );
 
