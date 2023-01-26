@@ -11,6 +11,7 @@ export default abstract class Repository {
     if (!Repository.client) {
       console.info(`URI: ${process.env.DATABASE_URL}`);
       Repository.client = new MongoClient(process.env.DATABASE_URL);
+      Repository.client.connect();
     }
     this.collectionName = collectionName;
   }
@@ -23,10 +24,21 @@ export default abstract class Repository {
 
   protected async execute(execFunction: () => any): Promise<any> {
     try {
-      Repository.client.connect();
       return await execFunction();
-    } finally {
-      Repository.client.close();
+    } catch (e: any) {
+      console.log(e);
     }
+  }
+
+  public static async closeConnections() {
+    if (Repository.client) {
+      await Repository.client.close();
+    }
+  }
+
+  public async clearCollection(): Promise<void> {
+    return await this.execute(async () => {
+      return await this.queryCollection().deleteMany({});
+    });
   }
 }

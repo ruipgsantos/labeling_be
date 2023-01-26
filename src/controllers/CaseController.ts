@@ -9,9 +9,14 @@ router.get("/", async (req: Request, res: Response<Case[]>) => {
   res.json(await caseRepo.getAllCases());
 });
 
-router.put("/", async (req: Request<{}, {}, string>, res: Response<Case>) => {
-  const id = req.body;
-  res.json(await caseRepo.setCaseLabelled(id));
-});
+router.put(
+  "/",
+  async (
+    req: Request<{}, {}, { _id: string; label: string }>,
+    res: Response<Case>
+  ) => {
+    res.json(await caseRepo.setCaseLabelled(req.body));
+  }
+);
 
 export default router;

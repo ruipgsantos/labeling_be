@@ -1,4 +1,6 @@
 import express, { Request, Response } from "express";
+import UserRepository from "../repositories/UserRepository";
+import { User } from "../models";
 
 // declare module "express-session" {
 //   export interface SessionData {
@@ -8,19 +10,26 @@ import express, { Request, Response } from "express";
 // }
 
 const router = express.Router();
+const userRepo = UserRepository.getInstance();
 
-router.get(
-  "/nonce/:pubkey",
-  (req: Request<{ pubkey: string }>, res: Response<{ nonce: string }>) => {}
+router.post(
+  "/login",
+  async (
+    req: Request<{}, {}, { username: string; password: string }>,
+    res: Response<User>
+  ) => {
+    console.log(req.session);
+    const fetchedUser = await userRepo.getUser({ username: req.body.username });
+
+    if (fetchedUser.password === req.body.password) {
+      // console.log(req.session);
+      res.status(200).send();
+    } else {
+      //login fail
+      console.warn(`could not login...`);
+      res.status(401).send();
+    }
+  }
 );
-
-// router.post(
-//   "/login",
-//   async (
-//     req: Request<{}, {}, { pubkey: string; signedmsg: string }>,
-//     res: Response<User>
-//   ) => {
-//   }
-// );
 
 export default router;
