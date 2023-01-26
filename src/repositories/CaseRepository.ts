@@ -1,10 +1,6 @@
 import { Case } from "../models";
 import Repository from "./Repository";
-import {
-  ObjectId,
-  InsertOneResult,
-  InsertManyResult,
-} from "mongodb";
+import { ObjectId, InsertOneResult, InsertManyResult } from "mongodb";
 
 export default class CaseRepository extends Repository {
   protected static readonly CASE_COLLECTION = "case";
@@ -30,7 +26,7 @@ export default class CaseRepository extends Repository {
 
   public async getAllCases(): Promise<Case[]> {
     return await this.execute(async () => {
-      return await this.queryCollection().find({}).toArray();
+      return await this.queryCollection().find({ labelled: false }).toArray();
     });
   }
 
