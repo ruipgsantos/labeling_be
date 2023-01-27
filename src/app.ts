@@ -4,7 +4,11 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import { NextFunction } from "connect";
 import "express-async-errors";
-import { AuthRouter, CaseRouter, ConditionRouter } from "./controllers";
+import {
+  AuthController,
+  CaseController,
+  ConditionController,
+} from "./controllers";
 import { loadCases, loadConditions } from "./utils";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -36,6 +40,7 @@ app.use(
   })
 );
 
+//Custom session to know which doctor has labelled
 declare module "express-session" {
   export interface SessionData {
     userId: string;
@@ -47,10 +52,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //routes
-app.use("/auth", AuthRouter);
-app.use("/case", CaseRouter);
-app.use("/condition", ConditionRouter);
+app.use("/auth", AuthController);
+app.use("/case", CaseController);
+app.use("/condition", ConditionController);
 
+//NOTE: Error handling: should have custom Errors which would be filtered by this middleware and assigned the right STATUS
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     console.error(err);
@@ -62,6 +68,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 loadConditions();
 loadCases();
 
+//NOTE: is this needed??
 process.on("SIGINT", async () => {
   await Repository.closeConnections();
   process.exit(0);

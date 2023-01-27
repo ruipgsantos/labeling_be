@@ -1,5 +1,5 @@
-import AuthRouter from "./AuthController";
-import CaseRouter from "./CaseController";
-import ConditionRouter from "./ConditionController";
+import AuthController from "./AuthController";
+import CaseController from "./CaseController";
+import ConditionController from "./ConditionController";
 
-export { AuthRouter, CaseRouter, ConditionRouter };
+export { AuthController, CaseController, ConditionController };

@@ -9,6 +9,8 @@ router.get("/", async (req: Request, res: Response<Case[]>) => {
   res.json(await caseRepo.getAllCases());
 });
 
+//NOTE: Body could be the same type as Case model (including entire label as Condition)
+// would be more direct to save to document, but then any random label could be sent
 router.put(
   "/",
   async (

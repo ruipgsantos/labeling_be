@@ -1,0 +1,82 @@
+openapi: 3.0.0
+components:
+  schemas:
+    Condition:
+      properties:
+        icd10:
+          type: string
+        description:
+          type: string
+    Case:
+      properties:
+        _id:
+          type: string
+        text:
+          type: string
+    User:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+info:
+  title: Labelling API
+  version: 0.1.9
+servers:
+  - url: http://localhost:${PORT}
+paths:
+  /auth/login:
+    post:
+      summary: Login
+      description: Using a username and password, performs a login
+      requestBody:
+        description: Username and Password (non encrypted)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Confirmation of login
+  /case:
+    get:
+      summary: Get All Unlabelled Cases
+      description: Returns all Cases that are still unlabelled
+      responses:
+        "200":
+          description: Confirmation of login
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: "#/components/schemas/Case"
+    put:
+      summary: Save a Case
+      description: Returns all Cases that are still unlabelled
+      responses:
+        "200":
+          description: Confirmation of login
+          content:
+            application/json:
+              schema:
+                properties:
+                  caseId:
+                    type: string
+                    description: The case to label
+                  labelId:
+                    type: string
+                    description: The Id of the Label/Condition
+  /condition:
+    get:
+      summary: Get All Conditions
+      description: Returns all Conditions to label Cases
+      responses:
+        "200":
+          description: List of Conditions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Condition"

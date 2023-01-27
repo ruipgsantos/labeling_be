@@ -5,6 +5,9 @@ import { User } from "../models";
 const router = express.Router();
 const userRepo = UserRepository.getInstance();
 
+//NOTE: important things missing from authentication: 
+  // - check auth by middleware
+  // - hash password
 router.post(
   "/login",
   async (
