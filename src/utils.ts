@@ -5,6 +5,9 @@ import { Condition } from "./models";
 import path from "path";
 import CaseRepository from "./repositories/CaseRepository";
 
+/**
+ * Loads all conditions into db, if not existing
+ */
 const loadConditions = async () => {
   const conditionsRepo = ConditionRepository.getInstance();
 
@@ -47,6 +50,9 @@ const getCaseFilesText = (fileDir: string): string[] => {
     });
 };
 
+/**
+ * Loads all Cases into db, after clearing the collection
+ */
 const loadCases = async () => {
   try {
     console.info("Loading Cases...");

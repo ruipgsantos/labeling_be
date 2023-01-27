@@ -1,11 +1,6 @@
 import { Case } from "../models";
 import Repository from "./Repository";
-import {
-  ObjectId,
-  InsertOneResult,
-  InsertManyResult,
-  UpdateResult,
-} from "mongodb";
+import { ObjectId, InsertManyResult, UpdateResult } from "mongodb";
 import ConditionRepository from "./ConditionRepository";
 
 export default class CaseRepository extends Repository {
@@ -24,20 +19,10 @@ export default class CaseRepository extends Repository {
     return CaseRepository.instance;
   }
 
-  public async getCaseById(caseObj: Partial<Case>): Promise<Case> {
-    return (await this.queryCollection().findOne({ id: caseObj._id })) as Case;
-  }
-
   public async getAllCases(): Promise<Case[]> {
     return (await this.queryCollection()
       .find({ labelled: false })
       .toArray()) as Case[];
-  }
-
-  public async insertCase(
-    caseObj: Partial<Case>
-  ): Promise<InsertOneResult<Case>> {
-    return await this.queryCollection().insertOne(caseObj);
   }
 
   public async insertCases(
