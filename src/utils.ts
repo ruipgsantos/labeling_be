@@ -17,7 +17,7 @@ const loadConditions = async () => {
 
       //load conditions from csv
       const fileString = (
-        await fs.readFileSync(path.join(__dirname, "conditions.csv"))
+        await fs.readFileSync(path.join(__dirname, "../conditions.csv"))
       ).toString();
 
       let conditionsJson = (await csv({
