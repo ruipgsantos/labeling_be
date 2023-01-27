@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { DeleteResult, MongoClient } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -22,23 +22,13 @@ export default abstract class Repository {
       .collection(this.collectionName);
   }
 
-  protected async execute(execFunction: () => any): Promise<any> {
-    try {
-      return await execFunction();
-    } catch (e: any) {
-      console.log(e);
-    }
-  }
-
   public static async closeConnections() {
     if (Repository.client) {
       await Repository.client.close();
     }
   }
 
-  public async clearCollection(): Promise<void> {
-    return await this.execute(async () => {
-      return await this.queryCollection().deleteMany({});
-    });
+  public async clearCollection(): Promise<DeleteResult> {
+    return await this.queryCollection().deleteMany({});
   }
 }

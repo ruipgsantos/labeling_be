@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { InsertManyResult, ObjectId } from "mongodb";
 import { Condition } from "../models";
 import Repository from "./Repository";
 
@@ -18,21 +18,19 @@ export default class ConditionRepository extends Repository {
     return ConditionRepository.instance;
   }
 
-  public async insertConditions(conditions: Condition[]): Promise<Condition[]> {
-    return await this.execute(async () => {
-      return await this.queryCollection().insertMany(conditions);
-    });
+  public async insertConditions(
+    conditions: Condition[]
+  ): Promise<InsertManyResult<Condition>> {
+    return await this.queryCollection().insertMany(conditions);
   }
 
   public async getAllConditions(): Promise<Condition[]> {
-    return await this.execute(async () => {
-      return await this.queryCollection().find({}).toArray();
-    });
+    return (await this.queryCollection().find({}).toArray()) as Condition[];
   }
 
-  public async getCondition(_id: string): Promise<Condition[]> {
-    return await this.execute(async () => {
-      return await this.queryCollection().findOne({ _id: new ObjectId(_id) });
-    });
+  public async getCondition(_id: string): Promise<Condition> {
+    return (await this.queryCollection().findOne({
+      _id: new ObjectId(_id),
+    })) as Condition;
   }
 }

@@ -1,6 +1,11 @@
 import { Case } from "../models";
 import Repository from "./Repository";
-import { ObjectId, InsertOneResult, InsertManyResult } from "mongodb";
+import {
+  ObjectId,
+  InsertOneResult,
+  InsertManyResult,
+  UpdateResult,
+} from "mongodb";
 import ConditionRepository from "./ConditionRepository";
 
 export default class CaseRepository extends Repository {
@@ -20,31 +25,25 @@ export default class CaseRepository extends Repository {
   }
 
   public async getCaseById(caseObj: Partial<Case>): Promise<Case> {
-    return await this.execute(async () => {
-      return await this.queryCollection().findOne({ id: caseObj._id });
-    });
+    return (await this.queryCollection().findOne({ id: caseObj._id })) as Case;
   }
 
   public async getAllCases(): Promise<Case[]> {
-    return await this.execute(async () => {
-      return await this.queryCollection().find({ labelled: false }).toArray();
-    });
+    return (await this.queryCollection()
+      .find({ labelled: false })
+      .toArray()) as Case[];
   }
 
   public async insertCase(
     caseObj: Partial<Case>
   ): Promise<InsertOneResult<Case>> {
-    return await this.execute(async () => {
-      return await this.queryCollection().insertOne(caseObj);
-    });
+    return await this.queryCollection().insertOne(caseObj);
   }
 
   public async insertCases(
     caseObjs: Partial<Case>[]
   ): Promise<InsertManyResult<Case>> {
-    return await this.execute(async () => {
-      return await this.queryCollection().insertMany(caseObjs);
-    });
+    return await this.queryCollection().insertMany(caseObjs);
   }
 
   public async setCaseLabelled({
@@ -55,23 +54,20 @@ export default class CaseRepository extends Repository {
     caseId: string;
     labelId: string;
     doctorId: string;
-  }): Promise<Case> {
+  }): Promise<UpdateResult> {
     const condition = await ConditionRepository.getInstance().getCondition(
       labelId
     );
-
-    return await this.execute(async () => {
-      return await this.queryCollection().updateOne(
-        { _id: new ObjectId(caseId) },
-        {
-          $set: {
-            labelled: true,
-            label: condition,
-            doctorId,
-            time: Date.now(),
-          },
-        }
-      );
-    });
+    return await this.queryCollection().updateOne(
+      { _id: new ObjectId(caseId) },
+      {
+        $set: {
+          labelled: true,
+          label: condition,
+          doctorId,
+          time: Date.now(),
+        },
+      }
+    );
   }
 }

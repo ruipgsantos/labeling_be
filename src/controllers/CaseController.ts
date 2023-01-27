@@ -13,14 +13,14 @@ router.put(
   "/",
   async (
     req: Request<{}, {}, { caseId: string; labelId: string }>,
-    res: Response<Case>
+    res: Response
   ) => {
-    res.json(
-      await caseRepo.setCaseLabelled({
-        ...req.body,
-        doctorId: req.session.userId,
-      })
-    );
+    const result = await caseRepo.setCaseLabelled({
+      ...req.body,
+      doctorId: req.session.userId,
+    });
+
+    res.status(result.modifiedCount > 0 ? 200 : 500).send();
   }
 );
 

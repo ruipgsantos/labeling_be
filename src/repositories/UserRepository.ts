@@ -18,8 +18,6 @@ export default class UserRepository extends Repository {
   }
 
   public async getUser(user: Partial<User>): Promise<User> {
-    return await this.execute(async () => {
-      return await this.queryCollection().findOne(user);
-    });
+    return (await this.queryCollection().findOne(user)) as User;
   }
 }
